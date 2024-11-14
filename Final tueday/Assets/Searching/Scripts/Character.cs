@@ -167,7 +167,7 @@ namespace Searching
         public bool IsLvup(int x, int y)
         {
             int mapData = mapGenerator.GetMapData(x, y);
-            return mapData == mapGenerator.potion;
+            return mapData == mapGenerator.levelup;
         }
 
         public virtual void TakeDamage(int Damage)

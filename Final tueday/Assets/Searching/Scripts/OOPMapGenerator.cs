@@ -132,6 +132,8 @@ namespace Searching
                 if (mapdata[x, y] == empty)
                 {
                     Placelv(x, y);
+                    Debug.Log(x);
+                    Debug.Log(y);
                     count++;
                 }
             }
@@ -208,7 +210,6 @@ namespace Searching
             lvup[x, y].positionX = x;
             lvup[x, y].positionY = y;
             lvup[x, y].mapGenerator = this;
-
             obj.name = $"Item_{lvup[x, y].Name} {x}, {y}";
         }
 
@@ -236,6 +237,7 @@ namespace Searching
             enemies[x, y].positionY = y;
             enemies[x, y].mapGenerator = this;
             obj.name = $"Enemy_{enemies[x, y].Name} {x}, {y}";
+            
         }
 
         public void PlaceDemonWall(int x, int y)
