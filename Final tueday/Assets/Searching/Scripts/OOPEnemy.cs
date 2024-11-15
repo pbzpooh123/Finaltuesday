@@ -27,7 +27,7 @@ namespace Searching
         protected override void CheckDead()
         {
             base.CheckDead();
-            if (energy <= 0)
+            if (hp <= 0)
             {
                 // Award experience to the player
                 mapGenerator.player.GainExperience(experienceReward);

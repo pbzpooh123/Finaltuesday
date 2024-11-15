@@ -147,5 +147,18 @@ MonoBehaviour:
   positionX: 0
   positionY: 0
   mapGenerator: {fileID: 0}
+  level: 1
+  experience: 0
+  experienceToNextLevel: 100
   energy: 4
-  AttackPoint: 0
+  hp: 20
+  AttackPoint: 10
+  mana: 0
+  speed: 0
+  levelUpPopup: {fileID: 0}
+  levelUpText: {fileID: 0}
+  hpButton: {fileID: 0}
+  atkButton: {fileID: 0}
+  manaButton: {fileID: 0}
+  speedButton: {fileID: 0}
+  experienceReward: 100

@@ -16,6 +16,7 @@ namespace Searching
         public int experience = 0;
         public int experienceToNextLevel = 100;
         public int energy;
+        public int hp;
         public int AttackPoint;
         public int mana;
         public int speed;
@@ -26,7 +27,11 @@ namespace Searching
 
         // UI references for level-up pop-up (assign in Inspector)
         public GameObject levelUpPopup;
-        public TextMeshProUGUI levelUpText;
+        public TMP_Text levelUpText;
+        public TMP_Text energyText;
+        public TMP_Text hpText;
+        public TMP_Text atkText;
+        public TMP_Text manaText;
         public Button hpButton;
         public Button atkButton;
         public Button manaButton;
@@ -35,11 +40,13 @@ namespace Searching
         // Start is called before the first frame update
         protected void GetRemainEnergy()
         {
+            Debug.Log(Name + " : " + hp);
             Debug.Log(Name + " : " + energy);
         }
 
         public virtual void Move(Vector2 direction)
         {
+            
             if (isFreeze == true)
             {
                 GetComponent<SpriteRenderer>().color = Color.white;
@@ -109,7 +116,7 @@ namespace Searching
                 positionX = toX;
                 positionY = toY;
                 transform.position = new Vector3(positionX, positionY, 0);
-                TakeDamage(1);
+                Takenergy(4);
             }
 
             if (this is OOPPlayer)
@@ -172,8 +179,8 @@ namespace Searching
 
         public virtual void TakeDamage(int Damage)
         {
-            energy -= Damage;
-            Debug.Log(Name + " Current Energy : " + energy);
+            hp -= Damage;
+            Debug.Log(Name + " Current Hp : " + hp);
             CheckDead();
         }
         public virtual void TakeDamage(int Damage, bool freeze)
@@ -181,9 +188,17 @@ namespace Searching
             energy -= Damage;
             isFreeze = freeze;
             GetComponent<SpriteRenderer>().color = Color.blue;
-            Debug.Log(Name + " Current Energy : " + energy);
+            Debug.Log(Name + " Current Hp  : " + energy);
             Debug.Log("you is Freeze");
             CheckDead();
+        }
+        
+        public virtual void Takenergy(int Damage)
+        {
+            energy -= Damage;
+            Debug.Log(Name + " Current Energy : " + energy);
+            CheckDead();
+            UpdateEnergyUI();
         }
 
 
@@ -197,13 +212,17 @@ namespace Searching
 
         public void Heal(int healPoint, bool Bonuse)
         {
-            energy += healPoint * (Bonuse ? 2 : 1);
-            Debug.Log("Current Energy : " + energy);
+            hp += healPoint * (Bonuse ? 2 : 1);
+            Debug.Log("Current Energy : " + hp);
         }
 
         protected virtual void CheckDead()
         {
             if (energy <= 0)
+            {
+                Destroy(gameObject);
+            }
+            else if (hp <= 0)
             {
                 Destroy(gameObject);
             }
@@ -222,7 +241,6 @@ namespace Searching
         {
             level++;
             experience -= experienceToNextLevel;
-            experienceToNextLevel = Mathf.RoundToInt(experienceToNextLevel * 1.2f);
 
             // Show level-up pop-up
             ShowLevelUpPopup();
@@ -245,7 +263,7 @@ namespace Searching
             switch (stat)
             {
                 case "HP":
-                    energy += 10;
+                    hp += 10;
                     break;
                 case "Attack":
                     AttackPoint += 2;
@@ -264,6 +282,23 @@ namespace Searching
             atkButton.onClick.RemoveAllListeners();
             manaButton.onClick.RemoveAllListeners();
             speedButton.onClick.RemoveAllListeners();
+        }
+        
+        public void UpdateEnergyUI()
+        {
+            energyText.text = "Energy: " + energy.ToString();
+        }
+        public void UpdateHPUI()
+        {
+            energyText.text = "Energy: " + energy;
+        }
+        public void UpdateATkUI()
+        {
+            energyText.text = "Energy: " + energy;
+        }
+        public void UpdateManaUI()
+        {
+            energyText.text = "Energy: " + energy;
         }
     
     }

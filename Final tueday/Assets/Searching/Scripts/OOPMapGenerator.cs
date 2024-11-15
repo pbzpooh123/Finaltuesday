@@ -33,7 +33,6 @@ namespace Searching
         public Transform floorParent;
         public Transform wallParent;
         public Transform itemPotionParent;
-        public Transform itemlvParent;
         public Transform enemyParent;
 
         [Header("Set object Count")]
@@ -122,21 +121,6 @@ namespace Searching
                     count++;
                 }
             }
-            
-            lvup = new OOPItemlvup[X, Y];
-            count = 0;
-            while (count < lvCount)
-            {
-                int x = Random.Range(0, X);
-                int y = Random.Range(0, Y);
-                if (mapdata[x, y] == empty)
-                {
-                    Placelv(x, y);
-                    Debug.Log(x);
-                    Debug.Log(y);
-                    count++;
-                }
-            }
 
             keys = new OOPItemKey[X, Y];
             count = 0;
@@ -176,6 +160,19 @@ namespace Searching
                     count++;
                 }
             }
+            
+            lvup = new OOPItemlvup[X, Y];
+            count = 0;
+            while (count < lvCount)
+            {
+                int x = Random.Range(0, X);
+                int y = Random.Range(0, Y);
+                if (mapdata[x, y] == empty)
+                {
+                    Placelv(x, y);
+                    count++;
+                }
+            }
 
             mapdata[X - 1, Y - 1] = exit;
             Exit.transform.position = new Vector3(X - 1, Y - 1, 0);
@@ -200,18 +197,6 @@ namespace Searching
             obj.name = $"Item_{potions[x, y].Name} {x}, {y}";
         }
         
-        public void Placelv(int x, int y)
-        {
-            int r = Random.Range(0, lvPrefab.Length);
-            GameObject obj = Instantiate(lvPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
-            obj.transform.parent = itemlvParent;
-            mapdata[x, y] = levelup;
-            lvup[x, y] = obj.GetComponent<OOPItemlvup>(); 
-            lvup[x, y].positionX = x;
-            lvup[x, y].positionY = y;
-            lvup[x, y].mapGenerator = this;
-            obj.name = $"Item_{lvup[x, y].Name} {x}, {y}";
-        }
 
         public void PlaceKey(int x, int y)
         {
@@ -264,6 +249,19 @@ namespace Searching
             fireStorms[x, y].positionY = y;
             fireStorms[x, y].mapGenerator = this;
             obj.name = $"FireStorm_{fireStorms[x, y].Name} {x}, {y}";
+        }
+        
+        public void Placelv(int x, int y)
+        {
+            int r = Random.Range(0, lvPrefab.Length);
+            GameObject obj = Instantiate(lvPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
+            obj.transform.parent = wallParent;
+            mapdata[x, y] = levelup;
+            lvup[x, y] = obj.GetComponent<OOPItemlvup>(); 
+            lvup[x, y].positionX = x;
+            lvup[x, y].positionY = y;
+            lvup[x, y].mapGenerator = this;
+            obj.name = $"Item_{lvup[x, y].Name} {x}, {y}";
         }
 
         public OOPEnemy[] GetEnemies()
