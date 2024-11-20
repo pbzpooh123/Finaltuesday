@@ -13,7 +13,7 @@ namespace Searching
 
         public override void Hit()
         {
-            if (mapGenerator.player.inventory.numberOfItem(unlockKey) > 0)
+            if (mapGenerator.player.inventory.numberOfItem(unlockKey) > 0 && mapGenerator.player.inventory.numberOfItem("Flesh") >= 3 )
             {
                 Debug.Log("Exit unlocked");
                 mapGenerator.player.enabled = false;

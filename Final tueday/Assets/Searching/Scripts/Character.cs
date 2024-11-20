@@ -20,10 +20,24 @@ namespace Searching
         public int AttackPoint;
         public int mana;
         public int speed;
+        public int armor;
+        
+        
+        [Header("Stat Levels")]
+        public int hpLevel = 0;
+        public int attackLevel = 0;
+        public int manaLevel = 0;
+        public int speedLevel = 0;
 
         [Header("Character State")]
         protected bool isAlive;
         protected bool isFreeze;
+        
+        [Header("Skill Level Sliders")]
+        public Slider hpLevelSlider;
+        public Slider attackLevelSlider;
+        public Slider manaLevelSlider;
+        public Slider speedLevelSlider;
 
         // UI references for level-up pop-up (assign in Inspector)
         public GameObject levelUpPopup;
@@ -36,12 +50,19 @@ namespace Searching
         public Button atkButton;
         public Button manaButton;
         public Button speedButton;
+
+        [Header("Enemy kill")] 
+        public int Enemykill;
         
         // Start is called before the first frame update
         protected void GetRemainEnergy()
         {
             Debug.Log(Name + " : " + hp);
             Debug.Log(Name + " : " + energy);
+            hpLevel = 0; 
+            attackLevel = 0; 
+            manaLevel = 0; 
+            speedLevel = 0;
         }
 
         public virtual void Move(Vector2 direction)
@@ -106,6 +127,48 @@ namespace Searching
                     positionY = toY;
                     transform.position = new Vector3(positionX, positionY, 0);
                 }
+                else if (Isfruit(toX, toY))
+                {
+                    mapGenerator.fruitpos[toX, toY].Hit();
+                    positionX = toX;
+                    positionY = toY;
+                    transform.position = new Vector3(positionX, positionY, 0);
+                }
+                else if (Isarmor(toX, toY))
+                {
+                    mapGenerator.Armor[toX, toY].Hit();
+                    positionX = toX;
+                    positionY = toY;
+                    transform.position = new Vector3(positionX, positionY, 0);
+                }
+                else if (Issword(toX, toY))
+                {
+                    mapGenerator.Sword[toX, toY].Hit();
+                    positionX = toX;
+                    positionY = toY;
+                    transform.position = new Vector3(positionX, positionY, 0);
+                }
+                else if (Isatk(toX, toY))
+                {
+                    mapGenerator.atktime2s[toX, toY].Hit();
+                    positionX = toX;
+                    positionY = toY;
+                    transform.position = new Vector3(positionX, positionY, 0);
+                }
+                else if (Isheal(toX, toY))
+                {
+                    mapGenerator.itemheals[toX, toY].Hit();
+                    positionX = toX;
+                    positionY = toY;
+                    transform.position = new Vector3(positionX, positionY, 0);
+                }
+                else if (Isstun(toX, toY))
+                {
+                    mapGenerator.itemstuns[toX, toY].Hit();
+                    positionX = toX;
+                    positionY = toY;
+                    transform.position = new Vector3(positionX, positionY, 0);
+                }
                 else if (IsEnemy(toX, toY))
                 {
                     mapGenerator.enemies[toX, toY].Hit();
@@ -116,7 +179,7 @@ namespace Searching
                 positionX = toX;
                 positionY = toY;
                 transform.position = new Vector3(positionX, positionY, 0);
-                Takenergy(4);
+                TakeEnergy(4);
             }
 
             if (this is OOPPlayer)
@@ -176,30 +239,103 @@ namespace Searching
             int mapData = mapGenerator.GetMapData(x, y);
             return mapData == mapGenerator.levelup;
         }
+        public bool Isfruit(int x, int y)
+        {
+            int mapData = mapGenerator.GetMapData(x, y);
+            return mapData == mapGenerator.fruit;
+        }
+        public bool Isarmor(int x, int y)
+        {
+            int mapData = mapGenerator.GetMapData(x, y);
+            return mapData == mapGenerator.armor;
+        }
+        public bool Issword(int x, int y)
+        {
+            int mapData = mapGenerator.GetMapData(x, y);
+            return mapData == mapGenerator.sword;
+        }
+        public bool Isatk(int x, int y)
+        {
+            int mapData = mapGenerator.GetMapData(x, y);
+            return mapData == mapGenerator.atktime2;
+        }
+        public bool Isheal(int x, int y)
+        {
+            int mapData = mapGenerator.GetMapData(x, y);
+            return mapData == mapGenerator.itemheal;
+        }
+        public bool Isstun(int x, int y)
+        {
+            int mapData = mapGenerator.GetMapData(x, y);
+            return mapData == mapGenerator.itemstun;
+        }
+
 
         public virtual void TakeDamage(int Damage)
+        {
+            int reducedDamage = Mathf.Max(0, Damage - armor); // Ensure damage doesn't go below 0
+            hp -= reducedDamage;
+
+            Debug.Log($"{Name} took {reducedDamage} damage after armor reduction. Current HP: {hp}");
+            CheckDead();
+            UpdateHPUI();
+        }
+
+        public virtual void TakeDamage(int Damage, bool freeze)
+        {
+            int reducedDamage = Mathf.Max(0, Damage - armor);
+            hp -= reducedDamage;
+            isFreeze = freeze;
+
+            GetComponent<SpriteRenderer>().color = Color.blue;
+            Debug.Log($"{Name} took {reducedDamage} damage after armor reduction. Current HP: {hp}");
+            Debug.Log("You are frozen.");
+            CheckDead();
+            UpdateHPUI();
+        }
+        
+        public virtual void TakeDamage1(int Damage)
         {
             hp -= Damage;
             Debug.Log(Name + " Current Hp : " + hp);
             CheckDead();
         }
-        public virtual void TakeDamage(int Damage, bool freeze)
+        
+        public void UpdateSkillLevelUI()
         {
-            energy -= Damage;
-            isFreeze = freeze;
-            GetComponent<SpriteRenderer>().color = Color.blue;
-            Debug.Log(Name + " Current Hp  : " + energy);
-            Debug.Log("you is Freeze");
-            CheckDead();
+            hpLevelSlider.value = hpLevel;
+            attackLevelSlider.value = attackLevel;
+            manaLevelSlider.value = manaLevel;
+            speedLevelSlider.value = speedLevel;
         }
         
-        public virtual void Takenergy(int Damage)
+        public virtual void TakeEnergy(int baseEnergyCost)
         {
-            energy -= Damage;
+            // Calculate the energy cost reduction based on the speed level
+            float energyCostMultiplier = Mathf.Max(0.1f, 1f - (speedLevel * 0.3f)); // Minimum multiplier is 0.1 to avoid zero cost
+            int adjustedEnergyCost = Mathf.CeilToInt(baseEnergyCost * energyCostMultiplier);
+
+            Debug.Log("Base Energy Cost: " + baseEnergyCost);
+            Debug.Log("Speed Level: " + speedLevel);
+            Debug.Log("Multiplier: " + energyCostMultiplier);
+            Debug.Log("Adjusted Energy Cost: " + adjustedEnergyCost);
+
+            // Deduct adjusted energy cost
+            energy -= adjustedEnergyCost;
+
             Debug.Log(Name + " Current Energy : " + energy);
             CheckDead();
             UpdateEnergyUI();
         }
+        
+        public void TakeMana(int baseEnergyCost)
+        {
+
+            // Deduct adjusted energy cost
+            mana -= baseEnergyCost;
+            UpdateManaUI();
+        }
+
 
 
         public void Heal(int healPoint)
@@ -213,7 +349,15 @@ namespace Searching
         public void Heal(int healPoint, bool Bonuse)
         {
             hp += healPoint * (Bonuse ? 2 : 1);
-            Debug.Log("Current Energy : " + hp);
+            Debug.Log("Current hp : " + hp);
+            UpdateHPUI();
+        }
+        
+        public void Energy(int healPoint, bool Bonuse)
+        {
+            energy += healPoint * (Bonuse ? 2 : 1);
+            Debug.Log("Current Energy : " + energy);
+            UpdateEnergyUI();
         }
 
         protected virtual void CheckDead()
@@ -231,7 +375,9 @@ namespace Searching
         public void GainExperience(int amount)
         {
             experience += amount;
-            if (experience >= experienceToNextLevel)
+
+            // Handle multiple level-ups if experience exceeds the threshold
+            while (experience >= experienceToNextLevel)
             {
                 LevelUp();
             }
@@ -239,8 +385,11 @@ namespace Searching
 
         private void LevelUp()
         {
-            level++;
-            experience -= experienceToNextLevel;
+            level += 1;
+            experience -= experienceToNextLevel; // Deduct the required experience
+
+            // Scale experience required for the next level
+            experienceToNextLevel = Mathf.CeilToInt(experienceToNextLevel);
 
             // Show level-up pop-up
             ShowLevelUpPopup();
@@ -251,37 +400,69 @@ namespace Searching
             levelUpPopup.SetActive(true);
             levelUpText.text = "Level Up! Level " + level;
 
-            // Assign each button to increase a specific stat
-            hpButton.onClick.AddListener(() => IncreaseStat("HP"));
-            atkButton.onClick.AddListener(() => IncreaseStat("Attack"));
-            manaButton.onClick.AddListener(() => IncreaseStat("Mana"));
-            speedButton.onClick.AddListener(() => IncreaseStat("Speed"));
-        }
-
-        public void IncreaseStat(string stat)
-        {
-            switch (stat)
-            {
-                case "HP":
-                    hp += 10;
-                    break;
-                case "Attack":
-                    AttackPoint += 2;
-                    break;
-                case "Mana":
-                    mana += 5;
-                    break;
-                case "Speed":
-                    speed += 1;
-                    break;
-            }
-
-            // Hide level-up pop-up and remove listeners
-            levelUpPopup.SetActive(false);
+            // Clear existing listeners to prevent stacking
             hpButton.onClick.RemoveAllListeners();
             atkButton.onClick.RemoveAllListeners();
             manaButton.onClick.RemoveAllListeners();
             speedButton.onClick.RemoveAllListeners();
+
+            // Debug to ensure listeners are cleared
+            Debug.Log("Listeners cleared.");
+
+            // Assign each button to increase a specific stat
+            hpButton.onClick.AddListener(() => { Debug.Log("HP button clicked."); IncreaseStat("HP"); });
+            atkButton.onClick.AddListener(() => { Debug.Log("Attack button clicked."); IncreaseStat("Attack"); });
+            manaButton.onClick.AddListener(() => { Debug.Log("Mana button clicked."); IncreaseStat("Mana"); });
+            speedButton.onClick.AddListener(() => { Debug.Log("Speed button clicked."); IncreaseStat("Speed"); });
+        }
+
+
+
+
+        public void IncreaseStat(string stat)
+        {
+            Debug.Log("Increasing stat: " + stat);
+
+            switch (stat)
+            {
+                case "HP":
+                    hpLevel += 1;
+                    hp += 10; // Scale HP based on its level
+                    Debug.Log("HP increased to: " + hp);
+                    break;
+
+                case "Attack":
+                    attackLevel += 1;
+                    AttackPoint += 2; // Scale Attack based on its level
+                    Debug.Log("Attack increased to: " + AttackPoint);
+                    break;
+
+                case "Mana":
+                    manaLevel += 1;
+                    mana += 5; // Scale Mana based on its level
+                    Debug.Log("Mana increased to: " + mana);
+                    break;
+
+                case "Speed":
+                    speedLevel += 1;
+                    speed += 1; // Scale Speed based on its level
+                    Debug.Log("Speed increased to: " + speed);
+                    break;
+            }
+
+            // Update UI and hide pop-up
+            UpdateSkillLevelUI();
+            UpdateHPUI();
+            UpdateATkUI();
+            UpdateManaUI();
+            levelUpPopup.SetActive(false);
+
+            // Clear listeners to avoid stacking on next level-up
+            hpButton.onClick.RemoveAllListeners();
+            atkButton.onClick.RemoveAllListeners();
+            manaButton.onClick.RemoveAllListeners();
+            speedButton.onClick.RemoveAllListeners();
+            
         }
         
         public void UpdateEnergyUI()
@@ -290,15 +471,21 @@ namespace Searching
         }
         public void UpdateHPUI()
         {
-            energyText.text = "Energy: " + energy;
+            hpText.text = "Hit point: " +  hp;
         }
         public void UpdateATkUI()
         {
-            energyText.text = "Energy: " + energy;
+            atkText.text = "Damage: " + AttackPoint;
         }
         public void UpdateManaUI()
         {
-            energyText.text = "Energy: " + energy;
+            manaText.text = "Mana: " + mana;
+        }
+        
+        public void EquipArmor(int armorValue)
+        {
+            armor += armorValue; // Add armor value
+            Debug.Log($"{Name} equipped armor. Current armor: {armor}");
         }
     
     }

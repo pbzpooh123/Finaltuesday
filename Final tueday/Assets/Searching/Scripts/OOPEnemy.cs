@@ -5,76 +5,88 @@ using UnityEngine;
 namespace Searching
 {
     public class OOPEnemy : Character
+{
+    public int experienceReward = 100; // Experience points awarded to the player when this enemy is defeated
+    private bool stunned = false; // Flag to track if the enemy is stunned
+
+    public void Start()
     {
-        public int experienceReward = 100; // Experience points awarded to the player when this enemy is defeated
+        GetRemainEnergy();
+    }
 
-        public void Start()
-        {
-            GetRemainEnergy();
-        }
-
-        public override void Hit()
+    public override void Hit()
+    {
+        if (!stunned) // Allow attack only if not stunned
         {
             mapGenerator.player.Attack(this);
             this.Attack(mapGenerator.player);
         }
+    }
 
-        public void Attack(OOPPlayer _player)
+    public void Attack(OOPPlayer _player)
+    {
+        if (!stunned) // Prevent attack if stunned
         {
             _player.TakeDamage(AttackPoint);
         }
+    }
 
-        protected override void CheckDead()
+    public void Stun()
+    {
+        stunned = true; // Set stunned to true
+    }
+
+    public void RandomMove()
+    {
+        if (stunned)
         {
-            base.CheckDead();
-            if (hp <= 0)
-            {
-                // Award experience to the player
-                mapGenerator.player.GainExperience(experienceReward);
-
-                // Remove the enemy from the map
-                mapGenerator.enemies[positionX, positionY] = null;
-                mapGenerator.mapdata[positionX, positionY] = mapGenerator.empty;
-
-                // Destroy the enemy game object
-                Destroy(gameObject);
-            }
+            stunned = false; // Skip this turn and reset stunned flag
+            return;
         }
 
-        public void RandomMove()
+        int toX = positionX;
+        int toY = positionY;
+        int random = Random.Range(0, 4);
+        switch (random)
         {
-            int toX = positionX;
-            int toY = positionY;
-            int random = Random.Range(0, 4);
-            switch (random)
-            {
-                case 0:
-                    // up
-                    toY += 1;
-                    break;
-                case 1:
-                    // down 
-                    toY -= 1;
-                    break;
-                case 2:
-                    // left
-                    toX -= 1;
-                    break;
-                case 3:
-                    // right
-                    toX += 1;
-                    break;
-            }
-            if (!HasPlacement(toX, toY))
-            {
-                mapGenerator.mapdata[positionX, positionY] = mapGenerator.empty;
-                mapGenerator.enemies[positionX, positionY] = null;
-                positionX = toX;
-                positionY = toY;
-                mapGenerator.mapdata[positionX, positionY] = mapGenerator.enemy;
-                mapGenerator.enemies[positionX, positionY] = this;
-                transform.position = new Vector3(positionX, positionY, 0);
-            }
+            case 0:
+                toY += 1; // up
+                break;
+            case 1:
+                toY -= 1; // down 
+                break;
+            case 2:
+                toX -= 1; // left
+                break;
+            case 3:
+                toX += 1; // right
+                break;
+        }
+        if (!HasPlacement(toX, toY))
+        {
+            mapGenerator.mapdata[positionX, positionY] = mapGenerator.empty;
+            mapGenerator.enemies[positionX, positionY] = null;
+            positionX = toX;
+            positionY = toY;
+            mapGenerator.mapdata[positionX, positionY] = mapGenerator.enemy;
+            mapGenerator.enemies[positionX, positionY] = this;
+            transform.position = new Vector3(positionX, positionY, 0);
         }
     }
+
+    protected override void CheckDead()
+    {
+        base.CheckDead();
+        if (hp <= 0)
+        {
+            mapGenerator.player.GainExperience(experienceReward);
+            mapGenerator.player.inventory.AddItem("Flesh");
+
+            mapGenerator.enemies[positionX, positionY] = null;
+            mapGenerator.mapdata[positionX, positionY] = mapGenerator.empty;
+            Destroy(gameObject);
+        }
+    }
+}
+
 }

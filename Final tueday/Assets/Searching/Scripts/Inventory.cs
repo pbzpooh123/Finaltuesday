@@ -23,14 +23,22 @@ namespace Searching
 
             Debug.Log($"add item {itemName} => total: {inventory[itemName]}");
         }
-
-        // [In-class Assignment] addItem ที่รับค่า amount และเพิ่มจำนวนไอเทมในคลังตามจำนวนที่ระบุ
-        public void AddItem(string itemName, int amount)
+        
+        public void RemoveItem(string itemName)
         {
-            // ...
-        }
+            if (inventory.ContainsKey(itemName))
+            {
+                int remaining = inventory[itemName] - 1;
+                if (remaining <= 0)
+                {
+                    inventory.Remove(itemName);  // ถ้าจำนวนเป็น 0 หรือ น้อยกว่า ให้ลบออกจากคลัง
+                }
 
-        // ฟังก์ชันสำหรับลบไอเทม
+                Debug.Log($"remove {itemName} remaining: {remaining}");
+            }
+            
+        }
+        
         public void UseItem(string itemName)
         {
             if (inventory.ContainsKey(itemName))

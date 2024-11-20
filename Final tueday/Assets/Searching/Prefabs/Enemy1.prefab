@@ -152,11 +152,24 @@ MonoBehaviour:
   experienceToNextLevel: 100
   energy: 4
   hp: 20
-  AttackPoint: 10
+  AttackPoint: 7
   mana: 0
   speed: 0
+  armor: 0
+  hpLevel: 0
+  attackLevel: 0
+  manaLevel: 0
+  speedLevel: 0
+  hpLevelSlider: {fileID: 0}
+  attackLevelSlider: {fileID: 0}
+  manaLevelSlider: {fileID: 0}
+  speedLevelSlider: {fileID: 0}
   levelUpPopup: {fileID: 0}
   levelUpText: {fileID: 0}
+  energyText: {fileID: 0}
+  hpText: {fileID: 0}
+  atkText: {fileID: 0}
+  manaText: {fileID: 0}
   hpButton: {fileID: 0}
   atkButton: {fileID: 0}
   manaButton: {fileID: 0}

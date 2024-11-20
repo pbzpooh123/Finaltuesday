@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7577841510190773765}
   - component: {fileID: 684710481886379336}
-  - component: {fileID: 1124356193795777934}
+  - component: {fileID: 4035017773142247523}
   m_Layer: 0
   m_Name: OOPApple
   m_TagString: Untagged
@@ -50,8 +50,6 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -87,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1124356193795777934
+--- !u!114 &4035017773142247523
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,11 +94,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6476303242912763235}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66016a7a304da7440a6c304a005e4d8b, type: 3}
+  m_Script: {fileID: 11500000, guid: 75d9b11d2d8aa90409d979c4833523ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Apple
   positionX: 0
   positionY: 0
   mapGenerator: {fileID: 0}
-  healPoint: 5
+  healPoint: 20

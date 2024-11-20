@@ -16,11 +16,15 @@ namespace Searching
             PrintInfo();
             GetRemainEnergy();
             UpdateEnergyUI();
+            UpdateHPUI();
+            UpdateATkUI();
+            UpdateManaUI();
+            UpdateSkillLevelUI();
         }
 
         public void Update()
         {
-            
+            UpdateATkUI();
             if (Input.GetKeyDown(KeyCode.W))
             {
                 Move(Vector2.up);
@@ -45,11 +49,23 @@ namespace Searching
             {
                 UseFireStorm();
             }
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                Useatktime2();
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                Useheal();
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                Usestun();
+            }
         }
 
         public void Attack(OOPEnemy _enemy)
         {
-            _enemy.TakeDamage(AttackPoint);
+            _enemy.TakeDamage1(AttackPoint);
         }
 
         protected override void CheckDead()
@@ -110,6 +126,86 @@ namespace Searching
             Array.Sort(enemies, (a, b) => a.energy.CompareTo(b.energy));
             return enemies;
         }
+        
+       public void Useatktime2()
+{
+    int manaCost = 5;
+    if (inventory.numberOfItem("atktime2") > 0)
+    {
+        if (mapGenerator.player.mana >= manaCost)
+        {
+            inventory.UseItem("atktime2");
+            mapGenerator.player.AttackPoint *= 2;
+            mapGenerator.player.TakeMana(manaCost);
+            UpdateATkUI();
+        }
+        else
+        {
+            Debug.Log("Not enough mana to use atktime2!");
+        }
+    }
+    else
+    {
+        Debug.Log("No atktime2 item in inventory!");
+    }
+}
+
+public void Useheal()
+{
+    int manaCost = 2;
+    if (inventory.numberOfItem("itemheal") > 0)
+    {
+        if (mapGenerator.player.mana >= manaCost)
+        {
+            mapGenerator.player.Energy(30, false);
+            mapGenerator.player.TakeMana(manaCost);
+            UpdateEnergyUI();
+        }
+        else
+        {
+            Debug.Log("Not enough mana to use heal!");
+        }
+    }
+    else
+    {
+        Debug.Log("No heal item in inventory!");
+    }
+}
+
+public void Usestun()
+{
+    int manaCost = 5;
+    if (inventory.numberOfItem("itemstun") > 0)
+    {
+        if (mapGenerator.player.mana >= manaCost)
+        {
+            inventory.UseItem("itemstun");
+            mapGenerator.player.TakeMana(manaCost);
+            OOPEnemy[] enemies = mapGenerator.GetEnemies();
+
+            if (enemies.Length > 0)
+            {
+                OOPEnemy enemy = enemies[0]; // Stun the first enemy (or choose based on logic)
+                enemy.Stun();
+                Debug.Log("Enemy stunned!");
+            }
+            else
+            {
+                Debug.Log("No enemies to stun!");
+            }
+        }
+        else
+        {
+            Debug.Log("Not enough mana to use stun!");
+        }
+    }
+    else
+    {
+        Debug.Log("No stun item in inventory!");
+    }
+}
+
+
 
     }
 

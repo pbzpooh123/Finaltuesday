@@ -28,6 +28,12 @@ namespace Searching
         public GameObject[] keysPrefab;
         public GameObject[] enemiesPrefab;
         public GameObject[] fireStormPrefab;
+        public GameObject[] fruitPrefab;
+        public GameObject[] armorPrefab;
+        public GameObject[] swordPrefab;
+        public GameObject[] atkPrefab;
+        public GameObject[] healPrefab;
+        public GameObject[] stunPrefab;
 
         [Header("Set Transform")]
         public Transform floorParent;
@@ -42,6 +48,13 @@ namespace Searching
         public int itemFireStormCount;
         public int enemyCount;
         public int lvCount;
+        public int fruitCount;
+        public int armorCount;
+        public int swordCount;
+        public int atkCount;
+        public int healCount;
+        public int stunCount;
+        
 
         public int[,] mapdata;
 
@@ -51,6 +64,13 @@ namespace Searching
         public OOPItemKey[,] keys;
         public OOPEnemy[,] enemies;
         public OOPItemlvup[,] lvup;
+        public OOPfruit[,] fruitpos;
+        public armor[,] Armor;
+        public sword[,] Sword;
+        public atktime2[,] atktime2s;
+        public itemheal[,] itemheals;
+        public itemstun[,] itemstuns;
+
 
         // block types ...
         [Header("Block Types")]
@@ -64,6 +84,12 @@ namespace Searching
         public int enemy = 6;
         public int fireStorm = 7;
         public int levelup = 8;
+        public int fruit = 9;
+        public int armor = 10;
+        public int sword = 11;
+        public int atktime2 = 12;
+        public int itemheal = 13;
+        public int itemstun = 14;
 
         // Start is called before the first frame update
         void Start()
@@ -173,6 +199,84 @@ namespace Searching
                     count++;
                 }
             }
+            
+            fruitpos = new OOPfruit[X, Y];
+            count = 0;
+            while (count < fruitCount)
+            {
+                int x = Random.Range(0, X);
+                int y = Random.Range(0, Y);
+                if (mapdata[x, y] == empty)
+                {
+                    Placefruit(x, y);
+                    count++;
+                }
+            }
+            
+            Armor = new armor[X, Y];
+            count = 0;
+            while (count < armorCount)
+            {
+                int x = Random.Range(0, X);
+                int y = Random.Range(0, Y);
+                if (mapdata[x, y] == empty)
+                {
+                    Placearmor(x, y);
+                    count++;
+                }
+            }
+            
+            Sword = new sword[X, Y];
+            count = 0;
+            while (count < swordCount)
+            {
+                int x = Random.Range(0, X);
+                int y = Random.Range(0, Y);
+                if (mapdata[x, y] == empty)
+                {
+                    Placesword(x, y);
+                    count++;
+                }
+            }
+            
+            atktime2s = new atktime2[X, Y];
+            count = 0;
+            while (count < atkCount)
+            {
+                int x = Random.Range(0, X);
+                int y = Random.Range(0, Y);
+                if (mapdata[x, y] == empty)
+                {
+                    Placeatk(x, y);
+                    count++;
+                }
+            }
+            
+            itemheals = new itemheal[X, Y];
+            count = 0;
+            while (count < healCount)
+            {
+                int x = Random.Range(0, X);
+                int y = Random.Range(0, Y);
+                if (mapdata[x, y] == empty)
+                {
+                    Placeheal(x, y);
+                    count++;
+                }
+            }
+            
+            itemstuns = new itemstun[X, Y];
+            count = 0;
+            while (count < stunCount)
+            {
+                int x = Random.Range(0, X);
+                int y = Random.Range(0, Y);
+                if (mapdata[x, y] == empty)
+                {
+                    Placestun(x, y);
+                    count++;
+                }
+            }
 
             mapdata[X - 1, Y - 1] = exit;
             Exit.transform.position = new Vector3(X - 1, Y - 1, 0);
@@ -255,13 +359,90 @@ namespace Searching
         {
             int r = Random.Range(0, lvPrefab.Length);
             GameObject obj = Instantiate(lvPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
-            obj.transform.parent = wallParent;
+            obj.transform.parent = itemPotionParent;
             mapdata[x, y] = levelup;
             lvup[x, y] = obj.GetComponent<OOPItemlvup>(); 
             lvup[x, y].positionX = x;
             lvup[x, y].positionY = y;
             lvup[x, y].mapGenerator = this;
             obj.name = $"Item_{lvup[x, y].Name} {x}, {y}";
+        }
+        
+        public void Placefruit(int x, int y)
+        {
+            int r = Random.Range(0, fruitPrefab.Length);
+            GameObject obj = Instantiate(fruitPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
+            obj.transform.parent = itemPotionParent;
+            mapdata[x, y] = fruit;
+            fruitpos[x, y] = obj.GetComponent<OOPfruit>(); 
+            fruitpos[x, y].positionX = x;
+            fruitpos[x, y].positionY = y;
+            fruitpos[x, y].mapGenerator = this;
+            obj.name = $"Item_{fruitpos[x, y].Name} {x}, {y}";
+        }
+        
+        public void Placearmor(int x, int y)
+        {
+            int r = Random.Range(0, armorPrefab.Length);
+            GameObject obj = Instantiate(armorPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
+            obj.transform.parent = itemPotionParent;
+            mapdata[x, y] = armor;
+           Armor[x, y] = obj.GetComponent<armor>(); 
+           Armor[x, y].positionX = x;
+           Armor[x, y].positionY = y;
+           Armor[x, y].mapGenerator = this;
+            obj.name = $"Item_{Armor[x, y].Name} {x}, {y}";
+        }
+        public void Placesword(int x, int y)
+        {
+            int r = Random.Range(0, swordPrefab.Length);
+            GameObject obj = Instantiate(swordPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
+            obj.transform.parent = itemPotionParent;
+            mapdata[x, y] = sword;
+            Sword[x, y] = obj.GetComponent<sword>(); 
+            Sword[x, y].positionX = x;
+            Sword[x, y].positionY = y;
+            Sword[x, y].mapGenerator = this;
+            obj.name = $"Item_{Sword[x, y].Name} {x}, {y}";
+        }
+        
+        public void Placeatk(int x, int y)
+        {
+            int r = Random.Range(0, atkPrefab.Length);
+            GameObject obj = Instantiate(atkPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
+            obj.transform.parent = itemPotionParent;
+            mapdata[x, y] = atktime2;
+            atktime2s[x, y] = obj.GetComponent<atktime2>(); 
+            atktime2s[x, y].positionX = x;
+            atktime2s[x, y].positionY = y;
+            atktime2s[x, y].mapGenerator = this;
+            obj.name = $"Item_{atktime2s[x, y].Name} {x}, {y}";
+        }
+        
+        public void Placeheal(int x, int y)
+        {
+            int r = Random.Range(0, healPrefab.Length);
+            GameObject obj = Instantiate(healPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
+            obj.transform.parent = itemPotionParent;
+            mapdata[x, y] = itemheal;
+            itemheals[x, y] = obj.GetComponent<itemheal>(); 
+            itemheals[x, y].positionX = x;
+            itemheals[x, y].positionY = y;
+            itemheals[x, y].mapGenerator = this;
+            obj.name = $"Item_{itemheals[x, y].Name} {x}, {y}";
+        }
+        
+        public void Placestun(int x, int y)
+        {
+            int r = Random.Range(0, stunPrefab.Length);
+            GameObject obj = Instantiate(stunPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
+            obj.transform.parent = itemPotionParent;
+            mapdata[x, y] = itemstun;
+            itemstuns[x, y] = obj.GetComponent<itemstun>(); 
+            itemstuns[x, y].positionX = x;
+            itemstuns[x, y].positionY = y;
+            itemstuns[x, y].mapGenerator = this;
+            obj.name = $"Item_{itemstuns[x, y].Name} {x}, {y}";
         }
 
         public OOPEnemy[] GetEnemies()
