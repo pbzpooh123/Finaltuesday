@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 using static UnityEngine.EventSystems.EventTrigger;
 using TMPro;
 using UnityEngine.UI;
@@ -21,6 +20,9 @@ namespace Searching
         public int mana;
         public int speed;
         public int armor;
+        public GameObject atktime2item;
+        public GameObject stunitem;
+        public GameObject energyitem;
         
         
         [Header("Stat Levels")]
@@ -38,8 +40,6 @@ namespace Searching
         public Slider attackLevelSlider;
         public Slider manaLevelSlider;
         public Slider speedLevelSlider;
-
-        // UI references for level-up pop-up (assign in Inspector)
         public GameObject levelUpPopup;
         public TMP_Text levelUpText;
         public TMP_Text energyText;
@@ -53,6 +53,8 @@ namespace Searching
 
         [Header("Enemy kill")] 
         public int Enemykill;
+        
+        
         
         // Start is called before the first frame update
         protected void GetRemainEnergy()
@@ -154,6 +156,7 @@ namespace Searching
                     positionX = toX;
                     positionY = toY;
                     transform.position = new Vector3(positionX, positionY, 0);
+                    ShowatkPopup();
                 }
                 else if (Isheal(toX, toY))
                 {
@@ -161,6 +164,7 @@ namespace Searching
                     positionX = toX;
                     positionY = toY;
                     transform.position = new Vector3(positionX, positionY, 0);
+                    ShowenergyPopup();
                 }
                 else if (Isstun(toX, toY))
                 {
@@ -168,6 +172,7 @@ namespace Searching
                     positionX = toX;
                     positionY = toY;
                     transform.position = new Vector3(positionX, positionY, 0);
+                    ShowstunPopup();
                 }
                 else if (IsEnemy(toX, toY))
                 {
@@ -467,7 +472,7 @@ namespace Searching
         
         public void UpdateEnergyUI()
         {
-            energyText.text = "Energy: " + energy.ToString();
+            energyText.text = "Energy: " + energy;
         }
         public void UpdateHPUI()
         {
@@ -486,6 +491,39 @@ namespace Searching
         {
             armor += armorValue; // Add armor value
             Debug.Log($"{Name} equipped armor. Current armor: {armor}");
+        }
+        
+        public void ShowatkPopup()
+        {
+            atktime2item.SetActive(true);
+        }
+
+        // Hide the level-up popup
+        public void HideatkPopup()
+        {
+            atktime2item.SetActive(false);
+        }
+    
+        public void ShowstunPopup()
+        {
+            stunitem.SetActive(true);
+        }
+
+        // Hide the level-up popup
+        public void HidestunPopup()
+        {
+            stunitem.SetActive(false);
+        }
+    
+        public void ShowenergyPopup()
+        {
+            energyitem.SetActive(true);
+        }
+
+        // Hide the level-up popup
+        public void HideenergyPopup()
+        {
+            energyitem.SetActive(false);
         }
     
     }

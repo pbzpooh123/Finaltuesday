@@ -138,6 +138,7 @@ namespace Searching
             mapGenerator.player.AttackPoint *= 2;
             mapGenerator.player.TakeMana(manaCost);
             UpdateATkUI();
+            HideatkPopup();
         }
         else
         {
@@ -160,6 +161,7 @@ public void Useheal()
             mapGenerator.player.Energy(30, false);
             mapGenerator.player.TakeMana(manaCost);
             UpdateEnergyUI();
+            HideenergyPopup();
         }
         else
         {
@@ -182,6 +184,7 @@ public void Usestun()
             inventory.UseItem("itemstun");
             mapGenerator.player.TakeMana(manaCost);
             OOPEnemy[] enemies = mapGenerator.GetEnemies();
+            HidestunPopup();
 
             if (enemies.Length > 0)
             {

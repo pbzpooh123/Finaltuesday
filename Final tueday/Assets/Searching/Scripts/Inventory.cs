@@ -57,12 +57,6 @@ namespace Searching
             }
         }
 
-        // [In-class Assignment] UseItem ที่รับค่า amount และลดจำนวนไอเทมในคลังตามจำนวนที่ระบุ
-        public void UseItem(string itemName, int amount)
-        {
-            // ...
-        }
-
         // [In-class Assignment] ฟังก์ชันสำหรับตรวจสอบจำนวนไอเทมในคลัง
         public int numberOfItem(string itemName)
         {
